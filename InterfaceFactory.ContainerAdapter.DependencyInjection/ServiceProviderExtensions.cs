@@ -1,5 +1,13 @@
-namespace Microsoft.Extensions.DependencyInjection.InterfaceFactory;
+namespace InterfaceFactory.ContainerAdapter.DependencyInjection;
 
+/// <summary>
+/// Provides extension methods for configuring and utilizing the interface factory with an <see cref="IServiceProvider"/>.
+/// </summary>
+/// <remarks>
+/// This static class contains methods that facilitate the integration of the interface factory with the dependency injection
+/// system provided by <see cref="IServiceProvider"/>. It allows for setting up and accessing the service provider
+/// to resolve dependencies through the interface factory.
+/// </remarks>
 public static class ServiceProviderExtensions
 {
     /// <summary>
@@ -19,5 +27,5 @@ public static class ServiceProviderExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when attempting to access the current <see cref="IServiceProvider"/> without calling this method first.
     /// </exception>
-    public static IServiceProvider UseInterfaceFactory(this IServiceProvider serviceProvider) => ServiceProviderContainer.Current = serviceProvider;
+    public static IServiceProvider UseInterfaceFactory(this IServiceProvider serviceProvider) => ContainerAdapter.ServiceProvider = serviceProvider;
 }

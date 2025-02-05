@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35201.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.DependencyInjection.InterfaceFactory", "Microsoft.Extensions.DependencyInjection.InterfaceFactory\Microsoft.Extensions.DependencyInjection.InterfaceFactory.csproj", "{ACF93A1E-B472-44BA-89A6-0745A904FDB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterfaceFactory", "InterfaceFactory\InterfaceFactory.csproj", "{ACF93A1E-B472-44BA-89A6-0745A904FDB6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterfaceFactory.Tests", "InterfaceFactory.Tests\InterfaceFactory.Tests.csproj", "{DE64CFFD-D1DE-462A-A6ED-A083518FE8D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceFactory.ContainerAdapter.DependencyInjection", "InterfaceFactory.ContainerAdapter.DependencyInjection\InterfaceFactory.ContainerAdapter.DependencyInjection.csproj", "{CC233CE9-B274-4A20-ADC4-1AF4F630C0FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{DE64CFFD-D1DE-462A-A6ED-A083518FE8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE64CFFD-D1DE-462A-A6ED-A083518FE8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE64CFFD-D1DE-462A-A6ED-A083518FE8D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC233CE9-B274-4A20-ADC4-1AF4F630C0FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC233CE9-B274-4A20-ADC4-1AF4F630C0FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC233CE9-B274-4A20-ADC4-1AF4F630C0FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC233CE9-B274-4A20-ADC4-1AF4F630C0FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
