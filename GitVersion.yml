@@ -7,12 +7,12 @@ legacy-semver-padding: 0
 build-metadata-padding: 0
 commits-since-version-source-padding: 0
 branches:
-  main:
+  master:   # Changed from 'main' to 'master'
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    regex: main
+    regex: ^master$
     tracks-release-branches: false
     is-release-branch: false
   release:
@@ -20,9 +20,9 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    regex: release
+    regex: ^release?[/-]
     source-branches:
-    - main
+    - master   # Changed from 'main' to 'master'
     tracks-release-branches: false
     is-release-branch: true
 ignore:
