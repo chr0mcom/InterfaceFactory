@@ -83,12 +83,12 @@ jobs:
       # Push all packages to GitHub packages
       - name: Push packages to GitHub packages
         if: needs.build.outputs.CommitsSinceVersionSource > 0
-        run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.GH_TOKEN }} --source "github"
+        run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.GH_TOKEN }} --source "github"
       
       # Push all packages to Nuget.org
       - name: Push packages to Nuget.org
         if: needs.build.outputs.CommitsSinceVersionSource > 0
-        run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_API_TOKEN }} --source "https://api.nuget.org/v3/index.json"
+        run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.NUGET_API_TOKEN }} --source "https://api.nuget.org/v3/index.json"
       
       - name: Create Release
         if: needs.build.outputs.CommitsSinceVersionSource > 0
