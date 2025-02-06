@@ -21,7 +21,6 @@ jobs:
         with:
           versionSpec: 5.x
           
-      # Add Git configuration step
       - name: Setup Git
         run: |
           git config --global user.name "GitHub Actions"
@@ -39,11 +38,11 @@ jobs:
           echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
       
-      #Rest of your workflow remains the same
+      # Updated .NET SDK version to 8.0.x
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
