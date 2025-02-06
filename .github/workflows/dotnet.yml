@@ -38,7 +38,6 @@ jobs:
           echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
       
-      # Updated .NET SDK version to 8.0.x
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
@@ -49,6 +48,8 @@ jobs:
         run: dotnet build InterfaceFactory/InterfaceFactory.csproj -c Release -p:Version='${{ steps.gitversion.outputs.SemVer }}'
       - name: Build
         run: dotnet build InterfaceFactory.ContainerAdapter.DependencyInjection/InterfaceFactory.ContainerAdapter.DependencyInjection.csproj -c Release -p:Version='${{ steps.gitversion.outputs.SemVer }}'
+      - name: Test
+        run: dotnet test InterfaceFactory.Tests/InterfaceFactory.Tests.csproj --no-build --verbosity normal
       - name: Build and Pack NuGet package
         run: dotnet pack InterfaceFactory/InterfaceFactory.csproj -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
       - name: Upload NuGet package to GitHub
@@ -66,8 +67,9 @@ jobs:
       contents: write
     
     steps:
+      # Updated from v2.1.1 to v4
       - name: Download nuget package artifact
-        uses: actions/download-artifact@v2.1.1
+        uses: actions/download-artifact@v4
         with:
           name: nugetPackage
       - name: Prep packages
