@@ -1,14 +1,9 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
 name: CI
-
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,22 +14,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 #fetch-depth is needed for GitVersion
+          fetch-depth: 0
       
-      #Install and calculate the new version with GitVersion  
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.10.2
         with:
           versionSpec: 5.x
+          
+      # Add Git configuration step
+      - name: Setup Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
       - name: Determine Version
         uses: gittools/actions/gitversion/execute@v0.10.2
-        id: gitversion # step id used as reference for output values
+        id: gitversion
+        with:
+          useConfigFile: true
+          configFilePath: GitVersion.yml
+          
       - name: Display GitVersion outputs
         run: |
           echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
       
-      #Build/pack the project
+      #Rest of your workflow remains the same
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
@@ -58,31 +63,26 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/master' # only run job if on the main branch   
+    if: github.ref == 'refs/heads/master'
     permissions:
       packages: write
       contents: write
-      
     
     steps:
-      #Push NuGet package to GitHub packages
       - name: Download nuget package artifact
         uses: actions/download-artifact@v2.1.1
         with:
           name: nugetPackage
-
       - name: Prep packages
         run: dotnet nuget add source --username ${{ github.repository_owner }} --password ${{ secrets.GH_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
       - name: Push package to GitHub packages
-        if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change  
+        if: needs.build.outputs.CommitsSinceVersionSource > 0
         run: dotnet nuget push *.nupkg --api-key ${{ secrets.GH_TOKEN }}  --source "github"
       - name: Push package to Nuget.org
-        if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change  
+        if: needs.build.outputs.CommitsSinceVersionSource > 0
         run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_TOKEN }} --source "https://api.nuget.org/v3/index.json"
-
-      #Create release
       - name: Create Release
-        if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
+        if: needs.build.outputs.CommitsSinceVersionSource > 0
         uses: ncipollo/release-action@v1.12.0
         with:
           tag: ${{ needs.build.outputs.Version }}
