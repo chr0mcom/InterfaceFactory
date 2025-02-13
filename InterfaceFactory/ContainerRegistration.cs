@@ -8,12 +8,26 @@ namespace InterfaceFactory;
 public static class ContainerRegistration
 {
   /// <summary>
-  /// Scans the current assemblies for classes implementing IFactory and decorated with ContainerRegistrationAttribute, then registers them.
+  /// Scans the current application domain for classes implementing <see cref="IFactory{T}"/> 
+  /// and decorated with <see cref="ContainerRegistrationAttribute"/>, and registers them 
+  /// with the provided container adapter.
   /// </summary>
-  /// <param name="includeUnloadedAssemblies">Whether to load assemblies from the current folder that are not already loaded.</param>
+  /// <param name="registerAdapter">
+  /// The container adapter used to register the discovered interfaces and their implementations.
+  /// </param>
+  /// <param name="includeUnloadedAssemblies">
+  /// A boolean value indicating whether to load and scan assemblies from the current folder 
+  /// that are not already loaded into the application domain.
+  /// </param>
+  /// <remarks>
+  /// This method identifies concrete classes that implement interfaces derived from 
+  /// <see cref="IFactory{T}"/> and registers them with the container. If a 
+  /// <see cref="ContainerRegistrationAttribute"/> is present on the class, its properties 
+  /// (e.g., lifetime and key) are used to customize the registration.
+  /// </remarks>
   // ReSharper disable once MethodTooLong
   // ReSharper disable once FlagArgument
-  public static void RegisterInterfaceFactories(bool includeUnloadedAssemblies = false)
+  public static void RegisterInterfaceFactories(IContainerRegisterAdapter registerAdapter, bool includeUnloadedAssemblies = false)
   {
     if (includeUnloadedAssemblies) LoadAllAssembliesFromCurrentFolder();
 
@@ -38,11 +52,11 @@ public static class ContainerRegistration
 
         if (registrationAttribute?.Key is not null)
         {
-          ContainerAdapterContainer.Instance.RegisterKeyed(serviceInterface, concreteType, registrationAttribute.Lifetime, registrationAttribute.Key);
+          registerAdapter.RegisterKeyed(serviceInterface, concreteType, registrationAttribute.Lifetime, registrationAttribute.Key);
         }
         else
         {
-          ContainerAdapterContainer.Instance.Register(serviceInterface, concreteType, registrationAttribute?.Lifetime ?? ServiceLifetime.Scoped);
+          registerAdapter.Register(serviceInterface, concreteType, registrationAttribute?.Lifetime ?? ServiceLifetime.Scoped);
         }
       }
     }

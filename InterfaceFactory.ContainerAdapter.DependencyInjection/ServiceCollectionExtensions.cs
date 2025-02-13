@@ -38,8 +38,9 @@ public static class ServiceCollectionExtensions
   public static IServiceCollection RegisterInterfaceFactories(this ServiceCollection serviceCollection, bool includeUnloadedAssemblies = false)
   {
     ContainerAdapter.ServiceCollection = serviceCollection;
-    ContainerAdapterContainer.Instance = new ContainerAdapter();
-    ContainerRegistration.RegisterInterfaceFactories(includeUnloadedAssemblies);
+    var containerAdapter = new ContainerAdapter();
+    ContainerAdapterContainer.ResolveInstance = containerAdapter;
+    ContainerRegistration.RegisterInterfaceFactories(containerAdapter, includeUnloadedAssemblies);
     return serviceCollection;
   }
 }

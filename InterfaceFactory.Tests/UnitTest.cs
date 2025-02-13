@@ -9,14 +9,19 @@ public class UnitTest
   [TestMethod]
   public void TestMyServiceCollection()
   {
-    ServiceCollection serviceCollection = new ();
+    //Arrange
+    ServiceCollection serviceCollection = new();
     serviceCollection.RegisterInterfaceFactories(true);
-
     ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
     serviceProvider.UseInterfaceFactory();
-    
+
+    //Act
     IExample? myExmaple2 = IExample.GetInstance();
     IExample myExmaple = IExample.GetRequiredKeyedInstance(nameof(MyExample));
+
+    //Assert
+    Assert.IsInstanceOfType<MyExample2>(myExmaple2);
+    Assert.IsInstanceOfType<MyExample>(myExmaple);
   }
 
   public interface IExample : IFactory<IExample>;

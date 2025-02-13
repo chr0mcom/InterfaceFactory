@@ -2,11 +2,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace InterfaceFactory.ContainerAdapter.DependencyInjection;
 
-internal class ContainerAdapter : IContainerAdapter
+internal class ContainerAdapter : IContainerResolveAdapter, IContainerRegisterAdapter
 {
   internal static IServiceProvider? ServiceProvider;
   internal static IServiceCollection? ServiceCollection;
 
+  /// <inheritdoc />
   public void Register(Type serviceType, Type implementationType, ServiceLifetime lifetime) => RegisterKeyed(serviceType, implementationType, lifetime, null);
 
   /// <inheritdoc />
@@ -35,8 +36,12 @@ internal class ContainerAdapter : IContainerAdapter
     }
   }
 
+  /// <inheritdoc />
   public T? Resolve<T>() => ServiceProvider != null ? ServiceProvider.GetService<T>() : throw new ArgumentNullException($"The ServiceProvider was not set. Please call the extension method 'UseInterfaceFactory' on the ServiceProvider.");
+  /// <inheritdoc />
   public T? ResolveKeyed<T>(string key) => ServiceProvider != null ? ServiceProvider.GetKeyedService<T>(key) : throw new ArgumentNullException($"The ServiceProvider was not set. Please call the extension method 'UseInterfaceFactory' on the ServiceProvider.");
+  /// <inheritdoc />
   public T ResolveRequired<T>() where T : notnull => ServiceProvider != null ? ServiceProvider.GetRequiredService<T>() : throw new ArgumentNullException($"The ServiceProvider was not set. Please call the extension method 'UseInterfaceFactory' on the ServiceProvider.");
+  /// <inheritdoc />
   public T ResolveKeyedRequired<T>(string key) where T : notnull => ServiceProvider != null ? ServiceProvider.GetRequiredKeyedService<T>(key) : throw new ArgumentNullException($"The ServiceProvider was not set. Please call the extension method 'UseInterfaceFactory' on the ServiceProvider.");
 }
