@@ -48,13 +48,21 @@ jobs:
         run: dotnet build InterfaceFactory/InterfaceFactory.csproj -c Release -p:Version='${{ steps.gitversion.outputs.SemVer }}'
       - name: Build
         run: dotnet build InterfaceFactory.ContainerAdapter.DependencyInjection/InterfaceFactory.ContainerAdapter.DependencyInjection.csproj -c Release -p:Version='${{ steps.gitversion.outputs.SemVer }}'
-      - name: Build and Pack NuGet package
+      
+      # Pack both projects
+      - name: Build and Pack InterfaceFactory NuGet package
         run: dotnet pack InterfaceFactory/InterfaceFactory.csproj -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
-      - name: Upload NuGet package to GitHub
+      - name: Build and Pack DependencyInjection NuGet package
+        run: dotnet pack InterfaceFactory.ContainerAdapter.DependencyInjection/InterfaceFactory.ContainerAdapter.DependencyInjection.csproj -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
+      
+      # Upload both packages as artifacts
+      - name: Upload NuGet packages to GitHub
         uses: actions/upload-artifact@v4
         with:
-          name: nugetPackage
-          path: InterfaceFactory/bin/Release/
+          name: nugetPackages
+          path: |
+            InterfaceFactory/bin/Release/*.nupkg
+            InterfaceFactory.ContainerAdapter.DependencyInjection/bin/Release/*.nupkg
   
   release:
     runs-on: ubuntu-latest
@@ -65,24 +73,28 @@ jobs:
       contents: write
     
     steps:
-      # Updated from v2.1.1 to v4
-      - name: Download nuget package artifact
+      - name: Download nuget package artifacts
         uses: actions/download-artifact@v4
         with:
-          name: nugetPackage
+          name: nugetPackages
       - name: Prep packages
         run: dotnet nuget add source --username ${{ github.repository_owner }} --password ${{ secrets.GH_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-      - name: Push package to GitHub packages
+      
+      # Push all packages to GitHub packages
+      - name: Push packages to GitHub packages
         if: needs.build.outputs.CommitsSinceVersionSource > 0
-        run: dotnet nuget push *.nupkg --api-key ${{ secrets.GH_TOKEN }}  --source "github"
-      - name: Push package to Nuget.org
+        run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.GH_TOKEN }} --source "github"
+      
+      # Push all packages to Nuget.org
+      - name: Push packages to Nuget.org
         if: needs.build.outputs.CommitsSinceVersionSource > 0
-        run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_TOKEN }} --source "https://api.nuget.org/v3/index.json"
+        run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.NUGET_API_TOKEN }} --source "https://api.nuget.org/v3/index.json"
+      
       - name: Create Release
         if: needs.build.outputs.CommitsSinceVersionSource > 0
         uses: ncipollo/release-action@v1.12.0
         with:
           tag: ${{ needs.build.outputs.Version }}
           name: Release ${{ needs.build.outputs.Version }}
-          artifacts: "nugetPackage/*"
+          artifacts: "**/*.nupkg"
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -35,7 +35,7 @@ public static class ServiceCollectionExtensions
   ///   Thrown if <paramref name="serviceCollection" /> is <c>null</c>.
   /// </exception>
   // ReSharper disable once FlagArgument
-  public static IServiceCollection RegisterInterfaceFactories(this ServiceCollection serviceCollection, bool includeUnloadedAssemblies = false)
+  public static IServiceCollection RegisterInterfaceFactories(this IServiceCollection serviceCollection, bool includeUnloadedAssemblies = false)
   {
     ContainerAdapter.ServiceCollection = serviceCollection;
     var containerAdapter = new ContainerAdapter();
