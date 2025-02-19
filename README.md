@@ -70,8 +70,9 @@ InterfaceFactory is built around several core concepts:
 To integrate InterfaceFactory into your application:
 
 1. **Install the NuGet Packages**
-   - For core functionality, add the **InterfaceFactory.Core** package.
-   - Optionally, if you wish to use the built-in adapter, add **InterfaceFactory.DependencyInjection** (Note: this project has its own README).
+   - For core functionality, add the **InterfaceFactory** package.
+   - Optionally, if you wish to use the built-in adapter for Microsofts IoC, add **InterfaceFactory.ContainerAdapter.DependencyInjection** (Note: this project has its own README).
+   - Or, write your own adapter for your IoC Container
 
 2. **Register Services**
    - Extend your DI container’s ServiceCollection by calling:
