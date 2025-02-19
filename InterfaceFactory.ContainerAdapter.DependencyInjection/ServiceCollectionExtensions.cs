@@ -2,6 +2,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace InterfaceFactory.ContainerAdapter.DependencyInjection;
 
+/// <summary>
+/// Provides extension methods for registering interface factories in the dependency injection container.
+/// </summary>
+/// <remarks>
+/// This static class contains methods that facilitate the registration of interfaces extending 
+/// <see cref="IFactory{T}" /> with their corresponding concrete implementations in the 
+/// <see cref="IServiceCollection" />. It supports scanning loaded assemblies and optionally loading 
+/// additional assemblies to discover and register these interfaces.
+/// </remarks>
 public static class ServiceCollectionExtensions
 {
   /// <summary>
@@ -37,10 +46,7 @@ public static class ServiceCollectionExtensions
   // ReSharper disable once FlagArgument
   public static IServiceCollection RegisterInterfaceFactories(this IServiceCollection serviceCollection, bool includeUnloadedAssemblies = false)
   {
-    ContainerAdapter.ServiceCollection = serviceCollection;
-    var containerAdapter = new ContainerAdapter();
-    ContainerAdapterContainer.ResolveInstance = containerAdapter;
-    ContainerRegistration.RegisterInterfaceFactories(containerAdapter, includeUnloadedAssemblies);
+    ServiceProviderExtensions.ContainerAdapter = new ContainerAdapter(serviceCollection).RegisterInterfaceFactories(includeUnloadedAssemblies).SetContainerResolveAdapter();
     return serviceCollection;
   }
 }

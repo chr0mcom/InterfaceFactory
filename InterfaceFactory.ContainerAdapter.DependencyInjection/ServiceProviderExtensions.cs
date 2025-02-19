@@ -10,6 +10,7 @@ namespace InterfaceFactory.ContainerAdapter.DependencyInjection;
 /// </remarks>
 public static class ServiceProviderExtensions
 {
+    internal static ContainerAdapter? ContainerAdapter;
     /// <summary>
     /// Sets the current <see cref="IServiceProvider"/> to be used by the interface factory.
     /// </summary>
@@ -27,5 +28,5 @@ public static class ServiceProviderExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when attempting to access the current <see cref="IServiceProvider"/> without calling this method first.
     /// </exception>
-    public static IServiceProvider UseInterfaceFactory(this IServiceProvider serviceProvider) => ContainerAdapter.ServiceProvider = serviceProvider;
+    public static IServiceProvider UseInterfaceFactory(this IServiceProvider serviceProvider) => ContainerAdapter?.SetServiceProvider(serviceProvider) ?? throw new ArgumentNullException($"The ContainerAdapter was not set. Please use a RegisterInterfaceFactories Extension on the ServiceCollection.");
 }

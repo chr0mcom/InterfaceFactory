@@ -7,10 +7,32 @@ namespace InterfaceFactory;
 /// </summary>
 public static class ContainerRegistration
 {
+  private static IContainerResolveAdapter? _resolveInstance;
+  internal static IContainerResolveAdapter ResolveInstance => _resolveInstance ?? throw new ArgumentNullException($"The IContainerResolveAdapter was not set. Please use a ContainerAdapter, e.g. InterfaceFactory.ContainerAdapter.DependencyInjection.");
+
   /// <summary>
-  /// Scans the current application domain for classes implementing <see cref="IFactory{T}"/> 
-  /// and decorated with <see cref="ContainerRegistrationAttribute"/>, and registers them 
-  /// with the provided container adapter.
+  /// Sets the container resolve adapter to be used for resolving services.
+  /// </summary>
+  /// <param name="resolveAdapter">
+  /// An instance of <see cref="IContainerResolveAdapter"/> that provides the functionality 
+  /// for resolving services from the container.
+  /// </param>
+  /// <returns>
+  /// The provided <see cref="IContainerResolveAdapter"/> instance, allowing for method chaining.
+  /// </returns>
+  /// <remarks>
+  /// This method allows you to specify the container resolve adapter that will be used 
+  /// throughout the application. Ensure that the provided <paramref name="resolveAdapter"/> 
+  /// is properly configured before calling this method.
+  /// </remarks>
+  /// <exception cref="ArgumentNullException">
+  /// Thrown if the <paramref name="resolveAdapter"/> is <c>null</c>.
+  /// </exception>
+  public static T SetContainerResolveAdapter<T>(this T resolveAdapter) where T : IContainerResolveAdapter => (T)(_resolveInstance = resolveAdapter);
+  
+  /// <summary>
+  /// Scans the current application domain for concrete classes implementing interfaces derived 
+  /// from <see cref="IFactory{T}"/> and registers them with the provided container adapter.
   /// </summary>
   /// <param name="registerAdapter">
   /// The container adapter used to register the discovered interfaces and their implementations.
@@ -19,22 +41,24 @@ public static class ContainerRegistration
   /// A boolean value indicating whether to load and scan assemblies from the current folder 
   /// that are not already loaded into the application domain.
   /// </param>
+  /// <returns>
+  /// The same <see cref="IContainerRegisterAdapter"/> instance passed as the <paramref name="registerAdapter"/> parameter.
+  /// </returns>
   /// <remarks>
   /// This method identifies concrete classes that implement interfaces derived from 
-  /// <see cref="IFactory{T}"/> and registers them with the container. If a 
-  /// <see cref="ContainerRegistrationAttribute"/> is present on the class, its properties 
-  /// (e.g., lifetime and key) are used to customize the registration.
+  /// <see cref="IFactory{T}"/>. If a <see cref="ContainerRegistrationAttribute"/> is present 
+  /// on the class, its properties (e.g., lifetime and key) are used to customize the registration.
   /// </remarks>
   // ReSharper disable once MethodTooLong
   // ReSharper disable once FlagArgument
-  public static void RegisterInterfaceFactories(IContainerRegisterAdapter registerAdapter, bool includeUnloadedAssemblies = false)
+  public static T RegisterInterfaceFactories<T>(this T registerAdapter, bool includeUnloadedAssemblies = false) where T : IContainerRegisterAdapter
   {
     if (includeUnloadedAssemblies) LoadAllAssembliesFromCurrentFolder();
 
     var assemblies = AppDomain.CurrentDomain.GetAssemblies();
     // ReSharper disable once ComplexConditionExpression
     var concreteTypes = assemblies.SelectMany(GetTypesSafe)
-      .Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition);
+      .Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition && t.GetCustomAttribute<IgnoreContainerRegistrationAttribute>() is null);
     foreach (var concreteType in concreteTypes)
     {
       // ReSharper disable once ComplexConditionExpression
@@ -60,6 +84,8 @@ public static class ContainerRegistration
         }
       }
     }
+
+    return registerAdapter;
   }
 
   // ReSharper disable once TooManyDeclarations
