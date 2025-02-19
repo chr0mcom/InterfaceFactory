@@ -1,8 +1,13 @@
 # InterfaceFactory.ContainerAdapter.DependencyInjection
 
-InterfaceFactory.ContainerAdapter.DependencyInjection is the Microsoft.Extensions.DependencyInjection adapter for InterfaceFactory. This package bridges the gap between InterfaceFactory's container-agnostic service registration and resolution, and the native dependency injection provided by Microsoft's DI container.
 
-> NOTE: This adapter is intended to be used with the core InterfaceFactory project. For details on the core concepts and usage, please see the [InterfaceFactory README](https://github.com/yourrepo).
+[![Downloads](https://img.shields.io/nuget/dt/InterfaceFactory.ContainerAdapter.DependencyInjection?style=flat-square)](https://www.nuget.org/packages/InterfaceFactory.ContainerAdapter.DependencyInjection)
+[![Pipeline status](https://img.shields.io/github/actions/workflow/status/chr0mcom/InterfaceFactory/dotnet.yml?branch=main&style=flat-square)](https://github.com/chr0mcom/InterfaceFactory/actions/workflows/dotnet.yml)
+[![GitHub](https://img.shields.io/github/license/chr0mcom/InterfaceFactory?style=flat-square)](https://github.com/chr0mcom/InterfaceFactory/blob/main/LICENSE)
+
+| ![Logo](https://raw.githubusercontent.com/chr0mcom/InterfaceFactory/refs/heads/master/InterfaceFactory/logo.png) | InterfaceFactory.ContainerAdapter.DependencyInjection is the Microsoft.Extensions.DependencyInjection adapter for InterfaceFactory. This package bridges the gap between InterfaceFactory's container-agnostic service registration and resolution, and the native dependency injection provided by Microsoft's DI container. |
+| ---------- | ------- | 
+
 
 ---
 

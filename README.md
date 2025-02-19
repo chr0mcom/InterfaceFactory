@@ -1,8 +1,11 @@
 # InterfaceFactory
 
-InterfaceFactory is a modular C# library that streamlines service registration and resolution using a dependency injection (DI) container. By leveraging default implementations in interfaces (via IFactory<T>), it provides a clean, centralized, and container-agnostic API for retrieving services—all while preserving strong typing and sound architectural principles.
+[![Downloads](https://img.shields.io/nuget/dt/InterfaceFactory?style=flat-square)](https://www.nuget.org/packages/InterfaceFactory)
+[![Pipeline status](https://img.shields.io/github/actions/workflow/status/chr0mcom/InterfaceFactory/dotnet.yml?branch=main&style=flat-square)](https://github.com/chr0mcom/InterfaceFactory/actions/workflows/dotnet.yml)
+[![GitHub](https://img.shields.io/github/license/chr0mcom/InterfaceFactory?style=flat-square)](https://github.com/chr0mcom/InterfaceFactory/blob/main/LICENSE)
 
-> NOTE: This README is for the core InterfaceFactory project only. The adapter project (InterfaceFactory.ContainerAdapter.DependencyInjection) will have its own README.
+| ![Logo](https://raw.githubusercontent.com/chr0mcom/InterfaceFactory/refs/heads/master/InterfaceFactory/logo.png) | InterfaceFactory is a modular C# library that streamlines service registration and resolution using a dependency injection (DI) container. By leveraging default implementations in interfaces (via IFactory<T>), it provides a clean, centralized, and container-agnostic API for retrieving services—all while preserving strong typing and sound architectural principles. |
+| ---------- | ------- | 
 
 ---
 
