@@ -7,6 +7,8 @@ namespace InterfaceFactory;
 /// </summary>
 public static class ContainerRegistration
 {
+  internal const string TransientKey = "InterfaceFactoryTransientKey";
+  
   private static IContainerResolveAdapter? _resolveInstance;
   internal static IContainerResolveAdapter ResolveInstance => _resolveInstance ?? throw new ArgumentNullException($"The IContainerResolveAdapter was not set. Please use a ContainerAdapter, e.g. InterfaceFactory.ContainerAdapter.DependencyInjection.");
 
@@ -77,11 +79,16 @@ public static class ContainerRegistration
         if (registrationAttribute?.Key is not null)
         {
           registerAdapter.RegisterKeyed(serviceInterface, concreteType, registrationAttribute.Lifetime, registrationAttribute.Key);
+          if (registrationAttribute.Lifetime == ServiceLifetime.Scoped)
+            registerAdapter.RegisterKeyed(serviceInterface, concreteType, ServiceLifetime.Transient, TransientKey+ registrationAttribute.Key);
         }
         else
         {
           registerAdapter.Register(serviceInterface, concreteType, registrationAttribute?.Lifetime ?? ServiceLifetime.Scoped);
+          if (registrationAttribute == null || registrationAttribute.Lifetime == ServiceLifetime.Scoped)
+            registerAdapter.RegisterKeyed(serviceInterface, concreteType, ServiceLifetime.Transient, TransientKey);
         }
+
       }
     }
 

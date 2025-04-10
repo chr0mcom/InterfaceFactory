@@ -15,7 +15,18 @@ public interface IFactory<T>
   /// <returns>
   /// An instance of the service of type <typeparamref name="T"/>, or <c>null</c> if the service is not available.
   /// </returns>
-  public static T? GetInstance() => ContainerRegistration.ResolveInstance.Resolve<T>();
+  public static T? GetInstance()
+  {
+    try
+    {
+      return ContainerRegistration.ResolveInstance.Resolve<T>();
+    }
+    catch (InvalidOperationException)
+    {
+      return ContainerRegistration.ResolveInstance.ResolveKeyed<T>(ContainerRegistration.TransientKey);
+    }
+  }
+
   /// <summary>
   /// Retrieves a required service of type <typeparamref name="T"/> from the current <see cref="IServiceProvider"/>.
   /// </summary>
@@ -23,7 +34,17 @@ public interface IFactory<T>
   /// <exception cref="InvalidOperationException">
   /// Thrown if the service of type <typeparamref name="T"/> is not available.
   /// </exception>
-  public static T GetRequiredInstance() => ContainerRegistration.ResolveInstance.ResolveRequired<T>();
+  public static T GetRequiredInstance()
+  {
+    try
+    {
+      return ContainerRegistration.ResolveInstance.ResolveRequired<T>();
+    }
+    catch (InvalidOperationException)
+    {
+      return ContainerRegistration.ResolveInstance.ResolveKeyedRequired<T>(ContainerRegistration.TransientKey);
+    }
+  }
   /// <summary>
   /// Retrieves a service of type <typeparamref name="T"/> associated with the specified key
   /// from the current <see cref="IServiceProvider"/>.
@@ -33,7 +54,17 @@ public interface IFactory<T>
   /// An instance of the service of type <typeparamref name="T"/>, or <c>null</c> if the service
   /// associated with the specified key is not available.
   /// </returns>
-  public static T? GetKeyedInstance(string key) => ContainerRegistration.ResolveInstance.ResolveKeyed<T>(key);
+  public static T? GetKeyedInstance(string key)
+  {
+    try
+    {
+      return ContainerRegistration.ResolveInstance.ResolveKeyed<T>(key);
+    }
+    catch (InvalidOperationException)
+    {
+      return ContainerRegistration.ResolveInstance.ResolveKeyed<T>(ContainerRegistration.TransientKey+key);
+    }
+  }
   /// <summary>
   /// Retrieves a required service of type <typeparamref name="T"/> associated with the specified key
   /// from the current <see cref="IServiceProvider"/>.
@@ -43,5 +74,15 @@ public interface IFactory<T>
   /// <exception cref="InvalidOperationException">
   /// Thrown if the service of type <typeparamref name="T"/> associated with the specified key is not available.
   /// </exception>
-  public static T GetRequiredKeyedInstance(string key) => ContainerRegistration.ResolveInstance.ResolveKeyedRequired<T>(key);
+  public static T GetRequiredKeyedInstance(string key)
+  {
+    try
+    {
+      return ContainerRegistration.ResolveInstance.ResolveKeyedRequired<T>(key);
+    }
+    catch (InvalidOperationException)
+    {
+      return ContainerRegistration.ResolveInstance.ResolveKeyedRequired<T>(ContainerRegistration.TransientKey+key);
+    }
+  }
 }
